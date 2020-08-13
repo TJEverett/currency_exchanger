@@ -2,7 +2,7 @@ import { ExchangeCall } from "./exchange.js";
 import $ from "jquery";
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./styles.css"
+import "./styles.css";
 
 $(document).ready(function(){
   let exchangeRate;
@@ -11,11 +11,11 @@ $(document).ready(function(){
     let exchangeCall = new ExchangeCall();
     exchangeRate = await exchangeCall.getRates();
     if (exchangeRate === false) {
-      // say an error happened
-    } else if (exchangeRate.result === error) {
-      // print error
+      $(".responses").append("<p>An unknown error occurred on page loading.</p>");
+    } else if (exchangeRate.result === "error") {
+      $(".responses").append("<p>" + exchangeRate["error-type"] + "</p>");
     } else {
-      // enable submit button
+      $("#button").removeClass("hidden");
     }
   })();
 
@@ -26,9 +26,9 @@ $(document).ready(function(){
 
     if (exchangeRate.conversion_rates[currency] > 0) {
       valueEnd = valueStart * exchangeRate.conversion_rates[currency];
-      // print valueEnd
+      $(".responses").append("<p>" + valueStart + " in USD is equivalent to " + valueEnd + " in " + currency + "</p>");
     } else {
-      // print error message
+      $(".responses").append("<p>Something went wrong in calculating your conversation. Can you please check your currency key is correct?</p>");
     }
 
   });
