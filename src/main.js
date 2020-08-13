@@ -1,29 +1,18 @@
-class ExchangeCall {
-  async getRates() {
-    try {
-      let response = await fetch(`https://v6.exchangerate-api.com/v6/${process.env.API_KEY}/latest/USD`);
-      let object;
-      if (response.ok && response.status === 200) {
-        object = response.json();
-      } else {
-        object = false;
-      }
-      return object;
-    } catch(error) {
-      return false;
-    }
-  }
-}
+import { ExchangeCall } from "./exchange.js";
+import $ from "jquery";
+import "bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./styles.css"
 
 $(document).ready(function(){
-  let exchangeRates;
+  let exchangeRate;
 
   (async () => {
     let exchangeCall = new ExchangeCall();
-    exchangeRates = await exchangeCall.getRates();
-    if (exchangeRates === false) {
+    exchangeRate = await exchangeCall.getRates();
+    if (exchangeRate === false) {
       // say an error happened
-    } else if (exchangeRates.result === error) {
+    } else if (exchangeRate.result === error) {
       // print error
     } else {
       // enable submit button
@@ -35,8 +24,12 @@ $(document).ready(function(){
     const currency = $("#currencyKey").val();
     let valueEnd;
 
-    valueEnd = valueStart * exchangeRates.conversion_rates[currency];
+    if (exchangeRate.conversion_rates[currency] > 0) {
+      valueEnd = valueStart * exchangeRate.conversion_rates[currency];
+      // print valueEnd
+    } else {
+      // print error message
+    }
 
-    // print valueEnd
   });
 });
